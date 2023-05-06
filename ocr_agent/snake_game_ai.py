@@ -27,7 +27,7 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 20000
+SPEED = 1
 
 class SnakeGameAI(Env):
     
@@ -36,7 +36,7 @@ class SnakeGameAI(Env):
         self.h = h
         # init display
         self.display = pygame.display.set_mode((self.w, self.h))
-        pygame.display.set_caption('Snake')
+        pygame.display.set_caption('Snake Game')
         self.clock = pygame.time.Clock()
         self.reset()
         
@@ -46,14 +46,25 @@ class SnakeGameAI(Env):
         
         self.head = Point(self.w/2, self.h/2)
         self.snake = [self.head, 
-                      Point(self.head.x-BLOCK_SIZE, self.head.y),
-                      Point(self.head.x-(2*BLOCK_SIZE), self.head.y)]
+                    Point(self.head.x-BLOCK_SIZE, self.head.y),
+                    Point(self.head.x-(2*BLOCK_SIZE), self.head.y),
+                    Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
         
         self.score = 0
         self.food = None
         self._place_food()
         self.frame_iteration = 0
-        
+
+    def get_observation(self):
+        raw = np.array(self.screenshot.grab(self.game_location))[:,:,:3].astype(np.uint8) # reshape to get 3 channels instead of 4. mss produces 4 channels for some reason. alpha channel?
+        # Grayscale
+        gray = cv2.cvtColor(raw, cv2.COLOR_BGR2GRAY)
+        # Resize - Compress the 640x480 down to 83x100
+        resized = cv2.resize(gray, (100,83))
+        # Add channels first to suit stable_baseline format
+        channel = np.reshape(resized, (1,83,100))
+        return channel    
+    
     def _place_food(self):
         x = random.randint(0, (self.w-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
         y = random.randint(0, (self.h-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE

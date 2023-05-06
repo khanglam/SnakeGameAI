@@ -1,6 +1,6 @@
 import time
 import pyautogui
-from snake_game_ocr_ai import SnakeGameAI, Direction, Point
+from snake_game_ai import SnakeGameAI, Direction, Point
 
 # AI Imports
 # MSS used for screen capture
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     env = Agent()
     time.sleep(2)
     env.print_observation()
-    # env_checker.check_env(env) # check if environment is compatible with OpenAI gym
+    env_checker.check_env(env) # check if environment is compatible with OpenAI gym
  
     # callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
     # model = DQN('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=100000, learning_starts=5000, learning_rate=0.0001)
