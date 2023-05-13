@@ -14,14 +14,14 @@ LR = 0.0001
 INPUT_SIZE = 11
 HIDDEN_SIZE = 256
 OUTPUT_SIZE = 3
-EXPLORATION = 0
+EXPLORATION = 80
 
 DEBUG=False
 
 class Agent:
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 0 #randomness
+        self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate (< 1)
         self.memory = deque(maxlen=MAX_MEMORY) # popleft()
         self.model = Linear_QNet(INPUT_SIZE, HIDDEN_SIZE, OUTPUT_SIZE)

@@ -19,7 +19,7 @@ class Linear_QNet(nn.Module):
         return x
     
     def save(self, file_name='model.path'):
-        model_folder_path = './model'
+        model_folder_path = 'q_learning_agent/model'
         if not os.path.exists(model_folder_path):
             os.makedirs(model_folder_path)
 
