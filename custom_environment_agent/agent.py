@@ -12,6 +12,15 @@ from stable_baselines3.common import env_checker
 
 # Build DQN and Train
 from stable_baselines3 import DQN
+from stable_baselines3 import PPO
+
+# RayTune for parallelized training
+import ray
+from ray import tune
+from ray.tune.schedulers import ASHAScheduler
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.callbacks import CheckpointCallback
 
 # Get the absolute path of the script directory
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -42,14 +51,40 @@ class TrainAndLoggingCallback(BaseCallback):
 #     |_|  |_|  \_\/_/    \_\_____|_| \_|     |_|  |_|\____/|_____/|______|______|
 
 # Environment Init
-
-
-def train_model():
-    env = SnakeGameEnv(speed=100000)
+def train_model(best_model=None):
     callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
-    model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
-    # model.load(os.path.join(CHECKPOINT_DIR, 'best_model_350000'))
+    # Single Agent
+    env = SnakeGameEnv(speed=10000)
+    # model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
+    # model = PPO('MlpPolicy', env=DummyVecEnv([lambda: env]), tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.001)
+    model = PPO('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.001)
+    # load previous checkpoint if available
+    if best_model:
+        model = PPO.load(os.path.join(CHECKPOINT_DIR, best_model), env)
+    # start/resume training
     model.learn(total_timesteps=1000000, callback=callback)
+
+def train_multi_agent(config, checkpoint_dir=None, checkpoint=None):
+    # Create a vectorized environment with 2 instances of your environment
+    env = SubprocVecEnv([new_env(10000) for _ in range(2)])
+
+    # create a PPO agent
+    agent = PPO('MlpPolicy', env, verbose=1, learning_rate=config['learning_rate'], 
+                n_steps=config['n_steps'], batch_size=config['batch_size'], 
+                gamma=config['gamma'], gae_lambda=config['gae_lambda'], 
+                clip_range=config['clip_range'], ent_coef=config['ent_coef'],
+                tensorboard_log="./logs")
+
+    # load previous checkpoint if available
+    if checkpoint_dir:
+        agent = PPO.load(checkpoint_dir)
+
+    # set up checkpoint saving
+    callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
+
+    # train the agent
+    agent.learn(total_timesteps=1000000, callback=callback)
+
 
 #   _______ ______  _____ _______     __  __  ____  _____  ______ _      
 #  |__   __|  ____|/ ____|__   __|   |  \/  |/ __ \|  __ \|  ____| |     
@@ -57,11 +92,14 @@ def train_model():
 #     | |  |  __|  \___ \   | |      | |\/| | |  | | |  | |  __| | |     
 #     | |  | |____ ____) |  | |      | |  | | |__| | |__| | |____| |____ 
 #     |_|  |______|_____/   |_|      |_|  |_|\____/|_____/|______|______|
+# Create a function to instantiate your environment
+def new_env(speed):
+    return SnakeGameEnv(speed)
 
 def test_model(best_model):
     env = SnakeGameEnv()
-    model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
-    model.load(os.path.join(CHECKPOINT_DIR, best_model))
+    # model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
+    model = PPO.load(os.path.join(CHECKPOINT_DIR, best_model), env)
     for episode in range(1000):
         observation = env.reset()
         done = False
@@ -85,6 +123,7 @@ def test_model(best_model):
 # print(env.observation_space.sample())
 # observation, reward, done, info = env.step(int(env.action_space.sample()))
 # env_checker.check_env(env) # check if environment is compatible with OpenAI gym   
- 
+
 # train_model()
-test_model("best_model_1000000")
+train_model('best_model_400000')
+# test_model("best_model_600000")

@@ -28,14 +28,15 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
+PREV_ACTIONS=20
 
-SNAKE_SIZE_GOAL=30
 class SnakeGameEnv(Env):
     
-    def __init__(self, w=640, h=480, speed=100):
+    def __init__(self, w=640, h=480, speed=40):
         super().__init__()
         self.SPEED = speed
-        self.observation_space = Box(low=-w, high=w, shape=(5+SNAKE_SIZE_GOAL,), dtype=np.float32)
+        # self.observation_space = Box(low=-w, high=w, shape=(6+PREV_ACTIONS,), dtype=np.float32)
+        self.observation_space = Box(low=-1, high=2, shape=(11+PREV_ACTIONS,), dtype=np.int8)
         self.action_space = Discrete(3)
         self.w = w
         self.h = h
@@ -45,6 +46,42 @@ class SnakeGameEnv(Env):
         self.clock = pygame.time.Clock()
         self.reset()
         
+    # def reset(self):
+    #     # init game state
+    #     self.direction = Direction.RIGHT
+        
+    #     self.head = Point(self.w/2, self.h/2)
+    #     self.snake = [self.head, 
+    #                 Point(self.head.x-BLOCK_SIZE, self.head.y),
+    #                 Point(self.head.x-(2*BLOCK_SIZE), self.head.y),
+    #                 Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
+        
+    #     self.score = 0
+    #     self.game_over = False
+    #     self.food = None
+    #     self._place_food()
+    #     self.frame_iteration = 0
+    #     # Calculate Observation
+    #     food_delta_x = self.head.x - self.food.x
+    #     food_delta_y = self.head.y - self.food.y
+    #     snake_length = len(self.snake)
+    #     self.prev_actions = deque(maxlen=PREV_ACTIONS)
+    #     for _ in range(PREV_ACTIONS):
+    #         self.prev_actions.append(-1)
+    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, euclidean_distance_to_food, snake_length] + list(self.prev_actions)
+    #     self.observation=np.array(self.observation)
+    #     return self.observation
+
+    # def get_observation(self):
+    #     food_delta_x = self.head.x - self.food.x
+    #     food_delta_y = self.head.y - self.food.y
+    #     snake_length = len(self.snake)
+    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, snake_length, euclidean_distance_to_food] + list(self.prev_actions)
+    #     self.observation=np.array(self.observation)
+    #     return self.observation
+
     def reset(self):
         # init game state
         self.direction = Direction.RIGHT
@@ -52,38 +89,70 @@ class SnakeGameEnv(Env):
         self.head = Point(self.w/2, self.h/2)
         self.snake = [self.head, 
                     Point(self.head.x-BLOCK_SIZE, self.head.y),
-                    Point(self.head.x-(2*BLOCK_SIZE), self.head.y)]
-                    # Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
+                    Point(self.head.x-(2*BLOCK_SIZE), self.head.y),
+                    Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
         
         self.score = 0
-        self.reward = 0
         self.game_over = False
         self.food = None
         self._place_food()
         self.frame_iteration = 0
-        # Calculate Observation
-        food_delta_x = self.head.x - self.food.x
-        food_delta_y = self.head.y - self.food.y
-        snake_length = len(self.snake)
-        self.prev_actions = deque(maxlen=SNAKE_SIZE_GOAL)
-        for _ in range(SNAKE_SIZE_GOAL):
+        self.prev_actions = deque(maxlen=PREV_ACTIONS)
+        for _ in range(PREV_ACTIONS):
             self.prev_actions.append(-1)
-
-        self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, snake_length] + list(self.prev_actions)
-        self.observation=np.array(self.observation)
+        # Calculate Observation
+        self.observation = self.get_observation()
         return self.observation
 
     def get_observation(self):
-        food_delta_x = self.head.x - self.food.x
-        food_delta_y = self.head.y - self.food.y
-        snake_length = len(self.snake)
+        head = self.snake[0]
+        point_l = Point(head.x - 20, head.y)
+        point_r = Point(head.x + 20, head.y)
+        point_u = Point(head.x, head.y - 20)
+        point_d = Point(head.x, head.y + 20)
+        
+        dir_l = self.direction == Direction.LEFT
+        dir_r = self.direction == Direction.RIGHT
+        dir_u = self.direction == Direction.UP
+        dir_d = self.direction == Direction.DOWN
 
-        self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, snake_length] + list(self.prev_actions)
-        self.observation=np.array(self.observation)
+        self.observation = [
+            # Danger straight
+            (dir_r and self.is_collision(point_r)) or 
+            (dir_l and self.is_collision(point_l)) or 
+            (dir_u and self.is_collision(point_u)) or 
+            (dir_d and self.is_collision(point_d)),
+
+            # Danger right
+            (dir_u and self.is_collision(point_r)) or 
+            (dir_d and self.is_collision(point_l)) or 
+            (dir_l and self.is_collision(point_u)) or 
+            (dir_r and self.is_collision(point_d)),
+
+            # Danger left
+            (dir_d and self.is_collision(point_r)) or 
+            (dir_u and self.is_collision(point_l)) or 
+            (dir_r and self.is_collision(point_u)) or 
+            (dir_l and self.is_collision(point_d)),
+            
+            # Move direction
+            dir_l,
+            dir_r,
+            dir_u,
+            dir_d,
+            
+            # Food location 
+            self.food.x < self.head.x,  # food left
+            self.food.x > self.head.x,  # food right
+            self.food.y < self.head.y,  # food up
+            self.food.y > self.head.y  # food down
+            ]
+        self.observation = np.array(self.observation + list(self.prev_actions)).astype(np.int8)
         return self.observation
 
     def step(self, action):
         self.frame_iteration += 1
+        reward=0
         # 1. collect user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -97,33 +166,29 @@ class SnakeGameEnv(Env):
 
         observation = self.get_observation()
         info={} # Not needed, but need to return to comply with Open AI Gym
-        # print(observation)
+        
         # 3. check if game over
-        # if self.is_collision() or self.frame_iteration > 100*len(self.snake):
-        if self.is_collision():
+        if self.is_collision() or self.frame_iteration > 100*len(self.snake):
             self.game_over = True
-            self.reward -= 1000
-            return observation, self.reward, self.game_over, info
+            reward = -10
+            return observation, reward, self.game_over, info
             
         # 4. eat and place new food or move
         if self.head == self.food:
             self.score += 1
-            self.reward += 1000 * self.score # Add bonus for reaching food and increase over time
+            reward = 10 * self.score # Add bonus for reaching food and increase over time
             self._place_food()
         else:
-            euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
-            self.reward += ((250-euclidean_distance_to_food)+1000 * self.score)/100
+            # euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+            # reward = ((250-euclidean_distance_to_food)+1000 * self.score)/100
             # self.total_reward = ((250 - euclidean_distance_to_food) + apple_reward)/100
             self.snake.pop()
-
-        # # Add a positive reward for each step taken without collision
-        # self.reward = 1
 
         # 5. update ui and clock
         self._update_ui()
         self.clock.tick(self.SPEED)
         # 6. return game over and score
-        return observation, self.reward, self.game_over, info
+        return observation, reward, self.game_over, info
 
     def _place_food(self):
         x = random.randint(0, (self.w-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
@@ -154,7 +219,10 @@ class SnakeGameEnv(Env):
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         
         text = font.render("Score: " + str(self.score), True, WHITE)
+        frame = font.render("Frame: " + str(self.frame_iteration), True, WHITE)
         self.display.blit(text, [0, 0])
+        self.display.blit(frame, [0, 30])
+
         pygame.display.flip()
 
     def _update_game_over_ui(self):
@@ -192,7 +260,7 @@ class SnakeGameEnv(Env):
         self.head = Point(x, y)
             
 if __name__ == '__main__':
-    game = SnakeGameEnv()
+    game = SnakeGameEnv(speed=2)
     
     # game loop
     while True:
