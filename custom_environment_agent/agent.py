@@ -15,9 +15,9 @@ from stable_baselines3 import DQN
 from stable_baselines3 import PPO
 
 # RayTune for parallelized training
-import ray
-from ray import tune
-from ray.tune.schedulers import ASHAScheduler
+# import ray
+# from ray import tune
+# from ray.tune.schedulers import ASHAScheduler
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
@@ -52,17 +52,18 @@ class TrainAndLoggingCallback(BaseCallback):
 
 # Environment Init
 def train_model(best_model=None):
-    callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
+    callback = TrainAndLoggingCallback(check_freq=100000, save_path=CHECKPOINT_DIR)
     # Single Agent
     env = SnakeGameEnv(speed=10000)
-    # model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
-    # model = PPO('MlpPolicy', env=DummyVecEnv([lambda: env]), tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.001)
-    model = PPO('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.001)
     # load previous checkpoint if available
     if best_model:
-        model = PPO.load(os.path.join(CHECKPOINT_DIR, best_model), env)
+        model = PPO.load(os.path.join(CHECKPOINT_DIR, best_model), env, learning_rate=0.0005)
+        # model = DQN.load(os.path.join(CHECKPOINT_DIR, best_model), env)
+    else:
+        model = PPO('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0005)
+        # model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.001)
     # start/resume training
-    model.learn(total_timesteps=1000000, callback=callback)
+    model.learn(total_timesteps=10000000, callback=callback)
 
 def train_multi_agent(config, checkpoint_dir=None, checkpoint=None):
     # Create a vectorized environment with 2 instances of your environment
@@ -83,7 +84,7 @@ def train_multi_agent(config, checkpoint_dir=None, checkpoint=None):
     callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
 
     # train the agent
-    agent.learn(total_timesteps=1000000, callback=callback)
+    agent.learn(total_timesteps=10000000, callback=callback)
 
 
 #   _______ ______  _____ _______     __  __  ____  _____  ______ _      
@@ -97,10 +98,12 @@ def new_env(speed):
     return SnakeGameEnv(speed)
 
 def test_model(best_model):
-    env = SnakeGameEnv()
-    # model = DQN('MlpPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=50000, learning_starts=10000, learning_rate=0.00005, exploration_fraction=0.5, exploration_final_eps=0.1)
+    env = SnakeGameEnv(speed=50000)
+    avg_reward = 0
+    avg_score = 0
+    iterations = 10
     model = PPO.load(os.path.join(CHECKPOINT_DIR, best_model), env)
-    for episode in range(1000):
+    for episode in range(iterations):
         observation = env.reset()
         done = False
         total_reward = 0
@@ -109,9 +112,12 @@ def test_model(best_model):
             observation, reward, done, info = env.step(int(action))
             # time.sleep(0.01)
             total_reward += reward
-        print('Total Reward for episode {} is {}'.format(episode, total_reward))
-    
-
+        print('Episode {}: Total Reward: {}. Score: {}'.format(episode, total_reward, env.score))
+        avg_reward += total_reward
+        avg_score += env.score
+    avg_reward /= iterations
+    avg_score /= iterations
+    print('Average Reward: {} Average Score: {}'.format(avg_reward, avg_score))
 #   _____  ______ ____  _    _  _____ 
 #  |  __ \|  ____|  _ \| |  | |/ ____|
 #  | |  | | |__  | |_) | |  | | |  __ 
@@ -125,5 +131,5 @@ def test_model(best_model):
 # env_checker.check_env(env) # check if environment is compatible with OpenAI gym   
 
 # train_model()
-train_model('best_model_400000')
-# test_model("best_model_600000")
+train_model('best_model')
+# test_model("best_model")

@@ -98,6 +98,7 @@ class SnakeGameEnv(Env):
         self._place_food()
         self.frame_iteration = 0
         self.prev_actions = deque(maxlen=PREV_ACTIONS)
+        self.prev_distance_from_food = 999
         for _ in range(PREV_ACTIONS):
             self.prev_actions.append(-1)
         # Calculate Observation
@@ -170,18 +171,21 @@ class SnakeGameEnv(Env):
         # 3. check if game over
         if self.is_collision() or self.frame_iteration > 100*len(self.snake):
             self.game_over = True
-            reward = -10
+            reward = -100
             return observation, reward, self.game_over, info
             
         # 4. eat and place new food or move
         if self.head == self.food:
             self.score += 1
-            reward = 10 * self.score # Add bonus for reaching food and increase over time
+            reward = 10
             self._place_food()
         else:
-            # euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
-            # reward = ((250-euclidean_distance_to_food)+1000 * self.score)/100
-            # self.total_reward = ((250 - euclidean_distance_to_food) + apple_reward)/100
+            # euclidean distance to food
+            current_distance_from_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+            if(current_distance_from_food > self.prev_distance_from_food):
+                reward = -1
+            else: reward = 1
+            self.prev_distance_from_food = current_distance_from_food
             self.snake.pop()
 
         # 5. update ui and clock
