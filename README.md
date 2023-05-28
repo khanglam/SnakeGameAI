@@ -122,7 +122,7 @@ Thank you for your understanding.
 
 ## Credits
 
-This project was developed by [Your Name].
+This project was developed and maintained by [Khang Lam](https://github.com/khanglam/).
 
 Special thanks to:
 
