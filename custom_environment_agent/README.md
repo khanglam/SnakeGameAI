@@ -140,14 +140,14 @@ To view the training logs in Tensorboard, follow these steps:
 
 1. Open a command prompt or terminal.
 
-2. Navigate to the directory where you have the Snake AI project.
+2. Navigate to the directory that contains `logs` directory. In this case, `SnakeGameAI/custom_environment_agent`
 
 3. Run the following command:
 
    ```shell
    tensorboard --logdir=logs/
-   This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
    ```
+This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
 
 ## Requirements
 
