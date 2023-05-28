@@ -1,6 +1,9 @@
 # SnakeGameAI
 
 SnakeGameAI is a Python implementation of the classic Snake game with different types of AI agents that attempt to learn to play the game using reinforcement learning.
+<p align="center">
+  <img src="https://github.com/khanglam/SnakeGameAI/assets/7472121/8520dc8b-6486-4231-bf39-33311cafb378" alt="Snake Game AI Demo">
+</p>
 
 ## Features
 
