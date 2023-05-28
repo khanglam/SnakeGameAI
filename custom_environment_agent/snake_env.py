@@ -46,42 +46,6 @@ class SnakeGameEnv(Env):
         self.clock = pygame.time.Clock()
         self.reset()
         
-    # def reset(self):
-    #     # init game state
-    #     self.direction = Direction.RIGHT
-        
-    #     self.head = Point(self.w/2, self.h/2)
-    #     self.snake = [self.head, 
-    #                 Point(self.head.x-BLOCK_SIZE, self.head.y),
-    #                 Point(self.head.x-(2*BLOCK_SIZE), self.head.y),
-    #                 Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
-        
-    #     self.score = 0
-    #     self.game_over = False
-    #     self.food = None
-    #     self._place_food()
-    #     self.frame_iteration = 0
-    #     # Calculate Observation
-    #     food_delta_x = self.head.x - self.food.x
-    #     food_delta_y = self.head.y - self.food.y
-    #     snake_length = len(self.snake)
-    #     self.prev_actions = deque(maxlen=PREV_ACTIONS)
-    #     for _ in range(PREV_ACTIONS):
-    #         self.prev_actions.append(-1)
-    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
-    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, euclidean_distance_to_food, snake_length] + list(self.prev_actions)
-    #     self.observation=np.array(self.observation)
-    #     return self.observation
-
-    # def get_observation(self):
-    #     food_delta_x = self.head.x - self.food.x
-    #     food_delta_y = self.head.y - self.food.y
-    #     snake_length = len(self.snake)
-    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
-    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, snake_length, euclidean_distance_to_food] + list(self.prev_actions)
-    #     self.observation=np.array(self.observation)
-    #     return self.observation
-
     def reset(self):
         # init game state
         self.direction = Direction.RIGHT
@@ -262,7 +226,49 @@ class SnakeGameEnv(Env):
             y -= BLOCK_SIZE
             
         self.head = Point(x, y)
-            
+#    ____  _   _                  ____  _                              _   _                 
+#   / __ \| | | |                / __ \| |                            | | (_)                
+#  | |  | | |_| |__   ___ _ __  | |  | | |__  ___  ___ _ ____   ____ _| |_ _  ___  _ __  ___ 
+#  | |  | | __| '_ \ / _ \ '__| | |  | | '_ \/ __|/ _ \ '__\ \ / / _` | __| |/ _ \| '_ \/ __|
+#  | |__| | |_| | | |  __/ |    | |__| | |_) \__ \  __/ |   \ V / (_| | |_| | (_) | | | \__ \
+#   \____/ \__|_| |_|\___|_|     \____/|_.__/|___/\___|_|    \_/ \__,_|\__|_|\___/|_| |_|___/
+                                                                                                   
+    # def reset(self):
+    #     # init game state
+    #     self.direction = Direction.RIGHT
+        
+    #     self.head = Point(self.w/2, self.h/2)
+    #     self.snake = [self.head, 
+    #                 Point(self.head.x-BLOCK_SIZE, self.head.y),
+    #                 Point(self.head.x-(2*BLOCK_SIZE), self.head.y),
+    #                 Point(self.head.x-(3*BLOCK_SIZE), self.head.y)]
+        
+    #     self.score = 0
+    #     self.game_over = False
+    #     self.food = None
+    #     self._place_food()
+    #     self.frame_iteration = 0
+    #     # Calculate Observation
+    #     food_delta_x = self.head.x - self.food.x
+    #     food_delta_y = self.head.y - self.food.y
+    #     snake_length = len(self.snake)
+    #     self.prev_actions = deque(maxlen=PREV_ACTIONS)
+    #     for _ in range(PREV_ACTIONS):
+    #         self.prev_actions.append(-1)
+    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, euclidean_distance_to_food, snake_length] + list(self.prev_actions)
+    #     self.observation=np.array(self.observation)
+    #     return self.observation
+
+    # def get_observation(self):
+    #     food_delta_x = self.head.x - self.food.x
+    #     food_delta_y = self.head.y - self.food.y
+    #     snake_length = len(self.snake)
+    #     euclidean_distance_to_food = np.linalg.norm(np.array(self.head) - np.array(self.food))
+    #     self.observation = [self.head.x, self.head.y, food_delta_x, food_delta_y, snake_length, euclidean_distance_to_food] + list(self.prev_actions)
+    #     self.observation=np.array(self.observation)
+    #     return self.observation
+    
 if __name__ == '__main__':
     game = SnakeGameEnv(speed=2)
     

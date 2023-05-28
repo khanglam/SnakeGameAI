@@ -6,9 +6,9 @@ SnakeGameAI is a Python implementation of the classic Snake game with different 
 
 - Classic Snake game implementation
 - Different types of AI agents for learning to play the game:
-  - **custom_environment_agent**: Creates a custom environment using OpenAI's Gym
-  - **ocr_agent**: Uses computer vision techniques with OpenCV and Tesseract for game analysis
-  - **q_learning_agent**: Implements a Deep Q Learning Network from scratch
+  - `custom_environment_agent`: Creates a custom environment using OpenAI's Gym
+  - `ocr_agent`: Uses computer vision techniques with OpenCV and Tesseract for game analysis
+  - `q_learning_agent`: Implements a Deep Q Learning Network from scratch
 - Customizable game environment and agent parameters
 - Training statistics and visualization with Tensorboard
 - Pretrained models for resumed learnings/evaluations
@@ -46,7 +46,8 @@ Make sure you have the following dependencies installed:
 This method uses PPO (Proximal Policy Optimization) algorithm with MlpPolicy to train the agent.
 
 Note: You can modify the script to use a different RL algorithm or adjust the training parameters.
-Bonus: I've spent a lot of time training this agent (~60+ million steps), and committed this pretrained model under **custom_environment_agent/train** directory.
+
+Bonus: I've spent a lot of time training this agent (~60+ million steps), and committed this pretrained model under `custom_environment_agent/train` directory.
 
 ## OCR Agent
 
@@ -62,16 +63,16 @@ This script implements a Q-Learning Network from scratch. Purpose of this is to 
 
 Navigate to the agent you desire (custom, ocr, q-learning) and run the script with the following command and options. The available commands are:
 
-- **train**: Trains the agent.
-- **evaluate**: Evaluates the agent using a pre-trained model.
+- `train`: Trains the agent.
+- `evaluate`: Evaluates the agent using a pre-trained model.
   This is the command format:
 
 ```bash
   python agent.py <command> --best_model <filename>
 ```
 
-- **command**: Required. Specify the command to execute (train or evaluate).
-- **--best_model** <filename>: Optional. Specify the filename of the best model to use. If not provided, it will default to an empty string, meaning it will begin training from scratch.
+- `command`: Required. Specify the command to execute (train or evaluate).
+- `--best_model` <filename>: Optional. Specify the filename of the best model to use. If not provided, it will default to an empty string, meaning it will begin training from scratch.
 
 Example usage:
 
@@ -87,7 +88,7 @@ Train the agent using a pre-trained model:
 python agent.py train --best_model best_model
 ```
 
-Evaluate the agent using the default best model:
+Evaluate the agent using the default model named "best_model":
 
 ```bash
 python agent.py evaluate
@@ -96,21 +97,21 @@ python agent.py evaluate
 Evaluate the agent using a specific best model:
 
 ```bash
-python agent.py evaluate --best_model best_model_custom
+python agent.py evaluate --best_model best_model
 ```
 
 ## Pretrained Models
 
-The SnakeGameAI repository includes pretrained models that you can use to quickly start playing or continue training the Snake AI. The models are located in the **train** directory of each agent.
+The SnakeGameAI repository includes pretrained models that you can use to quickly start playing or continue training the Snake AI. The models are located in the `train` directory of each agent.
 
-For both **custom_environment_agent** and **ocr_agent**, you will find that they will have **train** and **logs** folders.
+For both `custom_environment_agent` and `ocr_agent`, you will find that they will have `train` and `logs` folders.
 
-- **train** - All models will be saved here. How frequent it saves will be determined by the parameter you set in the code.
-- **logs** - All PPO/DQN logs will be saved here. You can use Tensorboard to open and analyze the performance of each training session.
+- `train` - All models will be saved here. How frequent it saves will be determined by the parameter you set in the code.
+- `logs` - All PPO/DQN logs will be saved here. You can use Tensorboard to open and analyze the performance of each training session.
 
-For q_learning agent, you will only find **train** folder. Code uses matplotlib to help plot mean_score and visualize performance.
+For q_learning agent, you will only find `train` folder. The code uses matplotlib to help plot mean_score and visualize performance.
 
-- **train** - Maintains all best_model.pth files. The model will get overridden if you decide to load and resume training. Otherwise if you start training from scratch, it will generate another best_model_2.pth etc... If you want to change this functionality, you can modify the code to your liking.
+- `train` - Maintains all best_model.pth files. The model will get overridden if you decide to load and resume training. Otherwise if you start training from scratch, it will generate another best_model_2.pth etc... If you want to change this functionality, you can modify the code to your liking.
 
 ## Contributing
 
