@@ -50,7 +50,7 @@ The agent receives rewards based on its actions and the resulting game state. Th
 
 The agent is trained using the Proximal Policy Optimization (PPO) algorithm, implemented in the Stable Baselines3 library. PPO is a policy optimization algorithm that uses a surrogate objective function to update the policy in an iterative manner. It strikes a balance between exploration and exploitation to find an optimal policy.
 
-## Training
+## Training Model
 
 The training process is responsible for training the Snake AI agent using reinforcement learning. In this implementation, the training is performed using the Proximal Policy Optimization (PPO) algorithm.
 
@@ -67,6 +67,30 @@ The `train_model` function follows the following steps:
 4. Starting or resuming the training: The model's `learn` method is called to begin the training process. The `total_timesteps` parameter determines the total number of timesteps the training will run for. During training, the model will interact with the environment, optimize its policy, and update its parameters based on the PPO algorithm.
 
 The `train_model` function provides a convenient way to train the Snake AI agent and can be customized as needed. You can modify the hyperparameters, change the algorithm (e.g., PPO or DQN), or adjust the training settings based on your requirements.
+
+### Examples
+
+Here are some examples of the agent in action:
+
+**Note**: The speed of the snake has been significantly reduced to for demo purposes. In real training, the speed is set to a much higher rate to speed up training.
+
+#### This is what training looks like if started from scratch:
+
+```bash
+python .\agent.py train
+```
+
+![train_from_scratch](https://github.com/khanglam/SnakeGameAI/assets/7472121/9e4b5621-ec9c-4e1f-9de2-1a0a930f07df) ![step_info from scratch](https://github.com/khanglam/SnakeGameAI/assets/7472121/ba25dfef-c1ac-4cf5-a363-4767125a966f)
+
+#### This is what training would look like if resumed from my pretrained model (~60+ million steps):
+
+```bash
+python .\agent.py train --best_model best_model
+```
+
+![train_from_best_model](https://github.com/khanglam/SnakeGameAI/assets/7472121/e4efb29d-7fbd-4a96-85db-b9f69a1f3719) ![step info from best_model](https://github.com/khanglam/SnakeGameAI/assets/7472121/98b2ba9b-55f2-4f86-862d-3f9d86cbbf8e)
+
+**Highlight**: Notice the `ep_rew_mean` and `value_loss` difference between the two.
 
 ## Evaluate Model
 
@@ -90,6 +114,24 @@ The `test_model` function provides a convenient way to evaluate the performance 
 
 Please note that this is a general explanation of the `test_model` function. If you have any specific details or additional information to include, please let me know, and I'll be happy to assist you further.
 
+#### To evaluate the model, execute either of these command. It will execute the agent for `iterations` and take the average reward and score:
+
+```bash
+python .\agent.py evaluate
+```
+
+or
+
+```bash
+python .\agent.py evaluate --best_model best_model
+```
+
+![evaluate](https://github.com/khanglam/SnakeGameAI/assets/7472121/953ae439-2818-4b96-b8e2-e9596d8ca2b4)
+
+In this case, after `5` iterations, calculate the averages:
+
+![evaluate_info](https://github.com/khanglam/SnakeGameAI/assets/7472121/3de33996-736f-4aea-bac4-cc193e49c9f8)
+
 ## Tensorboard
 
 Tensorboard is a powerful tool that allows you to visualize and analyze the training logs of the Snake AI agent. You can monitor various metrics, such as the training loss, rewards, and policies, to gain insights into the agent's learning progress.
@@ -104,30 +146,8 @@ To view the training logs in Tensorboard, follow these steps:
 
    ```shell
    tensorboard --logdir=logs/
+   This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
    ```
-
-## Examples
-
-Here are some examples of the agent in action:
-
-**Note**: The speed of the snake has been significantly reduced to for demo purposes. In real training, the speed is set to a much higher rate to speed up training.
-
-This is what training looks like if started from scratch:
-
-![Train From Scratch](https://github.com/khanglam/SnakeGameAI/assets/7472121/9e4b5621-ec9c-4e1f-9de2-1a0a930f07df) ![step_info from scratch](https://github.com/khanglam/SnakeGameAI/assets/7472121/ba25dfef-c1ac-4cf5-a363-4767125a966f)
-
-This is what training would look like if resumed from my pretrained model (~60+ million steps):
-
-![train_from_best_model](https://github.com/khanglam/SnakeGameAI/assets/7472121/e4efb29d-7fbd-4a96-85db-b9f69a1f3719) ![step info from best_model](https://github.com/khanglam/SnakeGameAI/assets/7472121/98b2ba9b-55f2-4f86-862d-3f9d86cbbf8e)
-
-**Highlight**: Notice the `ep_rew_mean` and `value_loss` difference between the two.
-
-## Training Progress
-
-You can visualize the training progress using TensorBoard. Run the following command:
-tensorboard --logdir=logs/
-
-This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
 
 ## Requirements
 
