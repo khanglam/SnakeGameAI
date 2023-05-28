@@ -161,3 +161,4 @@ This will start TensorBoard and you can access it in your web browser at `http:/
 
 - [Stable Baselines3 Documentation](https://stable-baselines3.readthedocs.io/)
 - [Proximal Policy Optimization Paper](https://arxiv.org/abs/1707.06347)
+- [Snake Played by a Deep Reinforcement Learning Agent](https://towardsdatascience.com/snake-played-by-a-deep-reinforcement-learning-agent-53f2c4331d36)
