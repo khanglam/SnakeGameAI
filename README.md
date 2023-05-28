@@ -68,7 +68,7 @@ Navigate to the agent you desire (custom, ocr, q-learning) and run the script wi
   This is the command format:
 
 ```bash
-  python agent.py <command> --best_model <filename>
+python agent.py <command> --best_model <filename>
 ```
 
 - `command`: Required. Specify the command to execute (train or evaluate).
@@ -79,7 +79,7 @@ Example usage:
 Train the agent from scratch:
 
 ```bash
-  python agent.py train
+python agent.py train
 ```
 
 Train the agent using a pre-trained model:
