@@ -1,8 +1,4 @@
-from snake_env import SnakeGameEnv, Direction, Point
-
-# OpenCV allows frame processing
-import cv2
-import numpy as np
+from snake_env import SnakeGameEnv
 # Import os for file path management
 import os 
 # Import Base Callback for saving models
@@ -10,7 +6,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 # Check Environment    
 from stable_baselines3.common import env_checker
 
-# Build DQN and Train
+# RL Algorithms
 from stable_baselines3 import DQN
 from stable_baselines3 import PPO
 
@@ -21,6 +17,9 @@ from stable_baselines3 import PPO
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
+
+# Args to be passed from terminal execution
+import argparse
 
 # Get the absolute path of the script directory
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -85,8 +84,6 @@ def train_multi_agent(config, checkpoint_dir=None, checkpoint=None):
 
     # train the agent
     agent.learn(total_timesteps=10000000, callback=callback)
-
-
 #   _______ ______  _____ _______     __  __  ____  _____  ______ _      
 #  |__   __|  ____|/ ____|__   __|   |  \/  |/ __ \|  __ \|  ____| |     
 #     | |  | |__  | (___    | |      | \  / | |  | | |  | | |__  | |     
@@ -129,7 +126,25 @@ def test_model(best_model):
 # print(env.observation_space.sample())
 # observation, reward, done, info = env.step(int(env.action_space.sample()))
 # env_checker.check_env(env) # check if environment is compatible with OpenAI gym   
-
 # train_model()
-train_model('best_model')
+# train_model('best_model')
 # test_model("best_model")
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Custom Environment Agent')
+    parser.add_argument('command', type=str, choices=['train', 'evaluate'], help='Command to execute')
+    parser.add_argument('--best_model', type=str, default='', help='Filename of the best model (default: "")')
+
+    args = parser.parse_args()
+
+    if args.command == 'train':
+        if args.best_model == "":
+            print("...Training from scratch...")
+        else: print("...Training with '"+args.best_model+"' ...")
+        train_model(args.best_model)
+    elif args.command == 'evaluate':
+        # Specify the best model to test
+        if args.best_model == "":
+            best_model = 'best_model'
+        else: best_model = args.best_model
+        test_model(best_model)

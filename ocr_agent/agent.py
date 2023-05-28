@@ -27,7 +27,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common import env_checker
 
 # Build DQN and Train
-from stable_baselines3 import DQN
+from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecFrameStack
 
@@ -137,17 +137,17 @@ if __name__ == '__main__':
 
     # Environment Init
     snake = SnakeGameAI()
-    snake.play_step()
+    # snake.play_step()
     env = Agent()
-    time.sleep(2)
-    env.print_observation()
-    env_checker.check_env(env) # check if environment is compatible with OpenAI gym
+    # time.sleep(2)
+    # env.print_observation()
+    # env_checker.check_env(env) # check if environment is compatible with OpenAI gym
  
-    # callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
-    # model = DQN('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=100000, learning_starts=5000, learning_rate=0.0001)
-
+    callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
+    model = PPO('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0001)
     # model.load('ocr_agent/train/best_model_100000')
-    # model.learn(total_timesteps=100000, callback=callback)
+    
+    model.learn(total_timesteps=1000000, callback=callback)
     # for episode in range(5):
     #     observation = env.reset()
     #     done = False
