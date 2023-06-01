@@ -31,9 +31,8 @@ These actions determine the direction in which the snake moves in the next time 
 ### Rewards
 
 The agent receives rewards based on its actions and the current state of the game. The following reward scheme is used:
-
-- Eating food: When the snake successfully eats the food, it receives a positive reward. This encourages the agent to actively seek and consume food.
-- Collision with walls or body: If the snake collides with the walls or its own body, it receives a negative reward. This discourages the agent from making detrimental moves that lead to collisions.
+- `+10`:  When the snake successfully eats the food, it receives a positive reward. This encourages the agent to actively seek and consume food.
+- `-10`: Collision with walls or body: If the snake collides with the walls or its own body, it receives a negative reward. This discourages the agent from making detrimental moves that lead to collisions.
 
 The goal of the agent is to maximize its cumulative reward over time by learning to navigate the game environment effectively.
 
@@ -71,6 +70,20 @@ The training process consists of the following steps:
 4. After each episode, evaluate the agent's performance by measuring the score achieved in the game.
 5. Keep track of the highest score achieved and save the model if a new high score is reached.
 6. Repeat the training process for a sufficient number of episodes to allow the agent to learn and improve its performance.
+
+**Note**: The speed of the snake has been significantly reduced to for demo purposes. In real training, the speed is set to a much higher rate to speed up training.
+
+**Highlight**: As part of Exploration vs Exploitation. The snake will start off by taking random actions from the action_space to explore its environment. In my case, I set the exploration parameter to be 85, which encourages the snake to explore for the initial `85 episodes` and decay this value as it goes.
+
+#### Training during `Exploration Phase`. 
+<p align="center">
+  <img src="https://github.com/khanglam/SnakeGameAI/assets/7472121/d731fd18-dcd0-4f6e-b121-3dcf5895c0fc" alt="Exploration Phase">
+</p>
+
+#### Training after 85 episodes, entering `Exploitation Phase`. 
+<p align="center">
+  <img src="https://github.com/khanglam/SnakeGameAI/assets/7472121/3bac28a0-739b-4639-a3d9-3b86ce5dbb43" alt="Exploitation Phase">
+</p>
 
 ## Evaluate Model
 
