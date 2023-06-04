@@ -7,6 +7,8 @@ import numpy as np
 # Sending commands
 import pydirectinput
 from gym import Env
+# OpenCV allows frame processing
+import cv2
 
 pygame.init()
 font = pygame.font.SysFont('arial', 25)
@@ -27,13 +29,14 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 1000000
+SPEED = 40
 
 class SnakeGameAI(Env):
     
-    def __init__(self, w=640, h=480):
+    def __init__(self, w=640, h=480, speed=SPEED):
         self.w = w
         self.h = h
+        self.SPEED = speed
         # init display
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('Snake Game')
@@ -139,8 +142,8 @@ class SnakeGameAI(Env):
             
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         
-        text = font.render("Score: " + str(self.score), True, WHITE)
-        self.display.blit(text, [0, 0])
+        # text = font.render("Score: " + str(self.score), True, WHITE)
+        # self.display.blit(text, [0, 0])
         pygame.display.flip()
 
     def _update_game_over_ui(self):

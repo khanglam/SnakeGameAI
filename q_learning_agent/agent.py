@@ -6,6 +6,8 @@ from collections import deque
 from model import Linear_QNet, QTrainer
 from helper import plot
 import os
+# Args to be passed from terminal execution
+import argparse
 
 # Hyperparameters
 MAX_MEMORY = 100_000
@@ -121,14 +123,15 @@ class Agent:
 
         return action
     
-def train():
+def train(best_model=None):
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
     high_score = 0
     agent = Agent()
     # if(EXPLORATION == 0):
-    agent.model.load()
+    if(best_model):
+        agent.model.load(best_model)
     game = SnakeGameAI()
     while True:
         # get old state
@@ -188,5 +191,20 @@ def main():
             game.reset()
 
 if __name__ == '__main__':
-    train()
-    # main()
+    parser = argparse.ArgumentParser(description='Custom Environment Agent')
+    parser.add_argument('command', type=str, choices=['train', 'evaluate'], help='Command to execute')
+    parser.add_argument('--best_model', type=str, default='', help='Filename of the best model (default: "")')
+
+    args = parser.parse_args()
+
+    if args.command == 'train':
+        if args.best_model == "":
+            print("...Training from scratch...")
+        else: print("...Training with '"+args.best_model+"' ...")
+        train(args.best_model)
+    elif args.command == 'evaluate':
+        # Specify the best model to test
+        if args.best_model == "":
+            best_model = 'best_model'
+        else: best_model = args.best_model
+        main(best_model)

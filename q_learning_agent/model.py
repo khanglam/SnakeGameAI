@@ -18,16 +18,16 @@ class Linear_QNet(nn.Module):
         x = self.linear2(x)
         return x
     
-    def save(self, file_name='model.path'):
-        model_folder_path = 'q_learning_agent/model'
+    def save(self, file_name='best_model.path'):
+        model_folder_path = 'q_learning_agent/train'
         if not os.path.exists(model_folder_path):
             os.makedirs(model_folder_path)
 
         file_name = os.path.join(model_folder_path, file_name)
         torch.save(self.state_dict(), file_name)
 
-    def load(self, file_name='model.path'):
-            model_folder_path = './model'
+    def load(self, file_name='best_model.path'):
+            model_folder_path = './train'
             file_name = os.path.join(model_folder_path, file_name)
 
             if os.path.isfile(file_name):
@@ -36,7 +36,7 @@ class Linear_QNet(nn.Module):
                 print ('Loading existing state dict.')
                 return True
             
-            print ('No existing state dict found. Starting from scratch.')
+            print ('Model not found (maybe add .path extension). Starting from scratch.')
             return False
 class QTrainer:
     def __init__(self, model, lr, gamma):

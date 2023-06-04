@@ -134,7 +134,7 @@ In this case, after `5` iterations, calculate the averages:
 
 ## Tensorboard
 
-Tensorboard is a powerful tool that allows you to visualize and analyze the training logs of the Snake AI agent. You can monitor various metrics, such as the training loss, rewards, and policies, to gain insights into the agent's learning progress.
+Tensorboard is a powerful tool that allows you to visualize and analyze the training logs of the Snake AI agent. You can monitor various metrics, such as the training loss, rewards, and policies, to gain insights into the agent's learning progress. Very neat!
 
 To view the training logs in Tensorboard, follow these steps:
 
@@ -147,7 +147,12 @@ To view the training logs in Tensorboard, follow these steps:
    ```shell
    tensorboard --logdir=logs/
    ```
-This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
+
+   This will start TensorBoard and you can access it in your web browser at `http://localhost:6006`. You will be able to see various training metrics and monitor the agent's learning progress.
+
+Examples:
+![Tensorboard Rewards](https://github.com/khanglam/SnakeGameAI/assets/7472121/e93a3492-3b19-4b16-807f-b3ccec21d2be)
+![Tensorboard Loss](https://github.com/khanglam/SnakeGameAI/assets/7472121/5b7bb47c-d721-4fc2-b293-42f1d55cc0f6)
 
 ## Requirements
 

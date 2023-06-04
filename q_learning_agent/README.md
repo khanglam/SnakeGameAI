@@ -31,7 +31,8 @@ These actions determine the direction in which the snake moves in the next time 
 ### Rewards
 
 The agent receives rewards based on its actions and the current state of the game. The following reward scheme is used:
-- `+10`:  When the snake successfully eats the food, it receives a positive reward. This encourages the agent to actively seek and consume food.
+
+- `+10`: When the snake successfully eats the food, it receives a positive reward. This encourages the agent to actively seek and consume food.
 - `-10`: Collision with walls or body: If the snake collides with the walls or its own body, it receives a negative reward. This discourages the agent from making detrimental moves that lead to collisions.
 
 The goal of the agent is to maximize its cumulative reward over time by learning to navigate the game environment effectively.
@@ -44,6 +45,7 @@ The Q-function is updated iteratively using the following formula:
 Q(s, a) = Q(s, a) + α * (r + γ * max(Q(s', a')) - Q(s, a))
 
 where:
+
 - `Q(s, a)` is the estimated value (Q-value) of taking action `a` in state `s`.
 - `α` is the learning rate, determining the weight of new information. It controls how much the agent should learn from each update.
 - `r` is the received reward for taking action `a` in state `s`.
@@ -73,14 +75,16 @@ The training process consists of the following steps:
 
 **Note**: The speed of the snake has been significantly reduced to for demo purposes. In real training, the speed is set to a much higher rate to speed up training.
 
-**Highlight**: As part of Exploration vs Exploitation. The snake will start off by taking random actions from the action_space to explore its environment. In my case, I set the exploration parameter to be 85, which encourages the snake to explore for the initial `85 episodes` and decay this value as it goes.
+**Highlight**: As part of Exploration vs Exploitation. The snake will start off by taking random actions from the action_space to explore its environment. In my case, I set the exploration parameter to be 85, which encourages the snake to explore for the initial `85 episodes` and decay this value as it goes. Even if loaded with a great model, you will find that the snake will still take random actions during its `exploration` phase. You can control this rate by modifying the code.
 
-#### Training during `Exploration Phase`. 
+#### Training during `Exploration Phase`.
+
 <p align="center">
   <img src="https://github.com/khanglam/SnakeGameAI/assets/7472121/d731fd18-dcd0-4f6e-b121-3dcf5895c0fc" alt="Exploration Phase">
 </p>
 
-#### Training after 85 episodes, entering `Exploitation Phase`. 
+#### Training after 85 episodes, entering `Exploitation Phase`.
+
 <p align="center">
   <img src="https://github.com/khanglam/SnakeGameAI/assets/7472121/3bac28a0-739b-4639-a3d9-3b86ce5dbb43" alt="Exploitation Phase">
 </p>
@@ -113,7 +117,6 @@ You can install the required packages by running the following command:
 
 pip install -r requirements.txt
 
-
 ## References
 
 Here are some resources that were helpful in the development of this Q Learning agent:
@@ -124,4 +127,3 @@ Here are some resources that were helpful in the development of this Q Learning 
 - [Matplotlib Documentation](https://matplotlib.org/stable/contents.html)
 
 Feel free to explore these references to gain a deeper understanding of the Q-learning algorithm and its implementation in this Snake Game agent.
-
