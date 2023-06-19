@@ -118,7 +118,7 @@ For q_learning agent, you will only find `train` folder. The code uses matplotli
 
 ## Contributing
 
-Feel free to clone this project for your own personal use or for learning purposes. However, please note that this project is not open for external contributions as it is intended for individual learning and experimentation. You may explore and modify the code as per your requirements.
+Please note that this project is not open for external contributions as it is intended for my individual learning and experimentation. You may however, feel free to clone this project to explore and modify the code as per your requirements.
 
 If you encounter any issues, have suggestions for improvements, or want to discuss ideas related to this project, you are welcome to open an issue to initiate a discussion. However, please understand that there might be limited support available for external contributions.
 
